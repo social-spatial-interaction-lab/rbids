@@ -179,6 +179,8 @@ Bids <- R6Class( # nolint: object_name_linter.
         full.names = TRUE
       )
       file_names <- basename(all_files)
+      message("Indexing BIDS dataset...")
+      pb <- txtProgressBar(min = 0, max = length(all_files), style = 3)
 
       pattern <- paste0(
         "^",
@@ -198,8 +200,9 @@ Bids <- R6Class( # nolint: object_name_linter.
       bids_index <- tibble::tibble(
         file_path = all_files,
         subject = ifelse(is.na(extracted_data[, "subject"]),
-                         NA_character_,
-                         paste0("sub-", extracted_data[, "subject"])),
+          NA_character_,
+          paste0("sub-", extracted_data[, "subject"])
+        ),
         session = extracted_data[, "session"],
         task = extracted_data[, "task"],
         tracksys = extracted_data[, "tracksys"],
@@ -214,6 +217,43 @@ Bids <- R6Class( # nolint: object_name_linter.
 
       tsv_files <- self$index %>%
         dplyr::filter(suffix == "tsv" & datatype == "motion", !is.na(subject))
+
+      empty_files <- character(0)
+      if (nrow(tsv_files) > 0) {
+        message("\nChecking motion files...")
+        pb <- txtProgressBar(min = 0, max = nrow(tsv_files), style = 3)
+        for (i in seq_len(nrow(tsv_files))) {
+          file <- tsv_files$file_path[i]
+          file_size <- file.size(file)
+          if (file_size == 0) {
+            empty_files <- c(empty_files, file)
+            next
+          }
+          content <- readr::read_tsv(file, show_col_types = FALSE)
+          if (nrow(content) == 0) {
+            empty_files <- c(empty_files, file)
+          }
+          setTxtProgressBar(pb, i)
+        }
+        close(pb)
+      }
+
+      self$index <- self$index %>%
+        dplyr::mutate(
+          is_empty = file_path %in% empty_files
+        )
+
+      if (length(empty_files) > 0) {
+        warning(
+          sprintf(
+            "Found %d empty motion data files.\n",
+            length(empty_files)
+          ),
+          paste("  -", empty_files, collapse = "\n"),
+          call. = FALSE
+        )
+      }
+
       if (nrow(tsv_files) == 0) {
         stop("No valid TSV files found in dataset.")
       }

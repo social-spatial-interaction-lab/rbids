@@ -1,3 +1,5 @@
+library(dplyr)
+
 #' @keywords Internal
 .single_character_check <- function(value, name) {
   if (!is.character(value) || length(value) != 1) {
@@ -75,4 +77,48 @@
   if (nrow(tsv_files) == 0) {
     stop("No valid TSV files found in dataset.")
   }
+}
+
+#' @keywords Internal
+.check_missing_json_sidecar <- function(index_data) {
+  motion_tsv_files <- index_data %>%
+    dplyr::filter(.data$datatype == "motion" & .data$suffix == "tsv")
+
+  missing_json_files <- character(0)
+
+  for (i in seq_len(nrow(motion_tsv_files))) {
+    current_row <- motion_tsv_files[i, ]
+
+    matching_json <- index_data %>%
+      dplyr::filter(
+        (is.na(.data$subject) & is.na(current_row$subject) |
+          .data$subject == current_row$subject),
+        (is.na(.data$session) & is.na(current_row$session) |
+          .data$session == current_row$session),
+        (is.na(.data$task) & is.na(current_row$task) | .data$task == current_row$task),
+        (is.na(.data$tracksys) & is.na(current_row$tracksys) |
+          .data$tracksys == current_row$tracksys),
+        (is.na(.data$acq) & is.na(current_row$acq) | .data$acq == current_row$acq),
+        (is.na(.data$run) & is.na(current_row$run) | .data$run == current_row$run),
+        .data$datatype == "motion",
+        .data$suffix == "json"
+      )
+
+    if (nrow(matching_json) != 1) {
+      missing_json_files <- c(missing_json_files, current_row$file_path)
+    }
+  }
+
+  if (length(missing_json_files) > 0) {
+    warning(
+      sprintf(
+        "Found %d motion TSV files without corresponding JSON sidecar.\n",
+        length(missing_json_files)
+      ),
+      paste("  -", missing_json_files, collapse = "\n"),
+      call. = FALSE
+    )
+  }
+
+  missing_json_files
 }

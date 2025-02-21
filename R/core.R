@@ -210,10 +210,12 @@ Bids <- R6Class( # nolint: object_name_linter.
 
       empty_files <- .check_empty_motion_files(tsv_files)
       .check_valid_tsv_files(tsv_files)
+      missing_json_files <- .check_missing_json_sidecar(self$index)
 
       self$index <- self$index %>%
         dplyr::mutate(
-          is_empty = file_path %in% empty_files
+          is_empty = file_path %in% empty_files,
+          missing_json = file_path %in% missing_json_files
         )
     }
   )

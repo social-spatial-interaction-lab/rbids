@@ -211,6 +211,12 @@ Bids <- R6Class( # nolint: object_name_linter.
 
       self$index <- bids_index %>%
         dplyr::mutate(across(everything(), ~ tidyr::replace_na(.x, NA_character_)))
+
+      tsv_files <- self$index %>%
+        dplyr::filter(suffix == "tsv" & datatype == "motion", !is.na(subject))
+      if (nrow(tsv_files) == 0) {
+        stop("No valid TSV files found in dataset.")
+      }
     }
   )
 )

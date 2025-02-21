@@ -99,7 +99,8 @@ Load the logs files.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{A list of filter conditions.}
+\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
+datatype to filter.}
 }
 \if{html}{\out{</div>}}
 }

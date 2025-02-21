@@ -173,14 +173,12 @@ Bids <- R6Class( # nolint: object_name_linter.
       dplyr::bind_rows(data_list)
     },
     .build_index = function() {
-      pattern_tsv <- "\\.tsv$"
-      all_tsv_files <- list.files(
+      all_files <- list.files(
         path = self$root,
         recursive = TRUE,
-        full.names = TRUE,
-        pattern = pattern_tsv
+        full.names = TRUE
       )
-      file_names <- basename(all_tsv_files)
+      file_names <- basename(all_files)
 
       pattern <- paste0(
         "^",
@@ -191,13 +189,14 @@ Bids <- R6Class( # nolint: object_name_linter.
         "(?:_acq-(?<acq>[[:alnum:]]+))?",
         "(?:_run-(?<run>[0-9]+))?",
         "_?",
-        "(?<datatype>[[:alnum:]]+)\\.tsv$"
+        "(?<datatype>[[:alnum:]]+)",
+        "\\.(?<suffix>[[:alnum:]]+)$"
       )
 
       extracted_data <- stringr::str_match(file_names, pattern)
 
       bids_index <- tibble::tibble(
-        file_path = all_tsv_files,
+        file_path = all_files,
         subject = ifelse(is.na(extracted_data[, "subject"]),
                          NA_character_,
                          paste0("sub-", extracted_data[, "subject"])),
@@ -206,7 +205,8 @@ Bids <- R6Class( # nolint: object_name_linter.
         tracksys = extracted_data[, "tracksys"],
         acq = extracted_data[, "acq"],
         run = extracted_data[, "run"],
-        datatype = extracted_data[, "datatype"]
+        datatype = extracted_data[, "datatype"],
+        suffix = extracted_data[, "suffix"]
       )
 
       self$index <- bids_index %>%

@@ -79,46 +79,77 @@ library(dplyr)
   }
 }
 
+#' This function checks if a *motion.tsv file has
+#' corresponding *motion.json, *channels.tsv and *channels.json files.
 #' @keywords Internal
-.check_missing_json_sidecar <- function(index_data) {
+.check_missing_meta_files <- function(index_data) {
   motion_tsv_files <- index_data %>%
-    dplyr::filter(.data$datatype == "motion" & .data$suffix == "tsv")
+    dplyr::filter(.data$datatype == "motion", .data$suffix == "tsv")
 
-  missing_json_files <- character(0)
+  missing_files <- list(
+    motion_json = character(0),
+    channels_json = character(0),
+    channels_tsv = character(0)
+  )
 
   for (i in seq_len(nrow(motion_tsv_files))) {
     current_row <- motion_tsv_files[i, ]
-
-    matching_json <- index_data %>%
-      dplyr::filter(
-        (is.na(.data$subject) & is.na(current_row$subject) |
-          .data$subject == current_row$subject),
+    base_conditions <- rlang::quo(
+      (is.na(.data$subject) & is.na(current_row$subject) |
+        .data$subject == current_row$subject) &
         (is.na(.data$session) & is.na(current_row$session) |
-          .data$session == current_row$session),
-        (is.na(.data$task) & is.na(current_row$task) | .data$task == current_row$task),
+          .data$session == current_row$session) &
+        (is.na(.data$task) & is.na(current_row$task) |
+          .data$task == current_row$task) &
         (is.na(.data$tracksys) & is.na(current_row$tracksys) |
-          .data$tracksys == current_row$tracksys),
-        (is.na(.data$acq) & is.na(current_row$acq) | .data$acq == current_row$acq),
-        (is.na(.data$run) & is.na(current_row$run) | .data$run == current_row$run),
-        .data$datatype == "motion",
-        .data$suffix == "json"
-      )
+          .data$tracksys == current_row$tracksys) &
+        (is.na(.data$acq) & is.na(current_row$acq) |
+          .data$acq == current_row$acq) &
+        (is.na(.data$run) & is.na(current_row$run) |
+          .data$run == current_row$run)
+    )
 
-    if (nrow(matching_json) != 1) {
-      missing_json_files <- c(missing_json_files, current_row$file_path)
+    checks <- list(
+      motion_json = list(datatype = "motion", suffix = "json"),
+      channels_json = list(datatype = "channels", suffix = "json"),
+      channels_tsv = list(datatype = "channels", suffix = "tsv")
+    )
+
+    for (check_type in names(checks)) {
+      matching_files <- index_data %>%
+        dplyr::filter(
+          !!base_conditions,
+          .data$datatype == checks[[check_type]]$datatype,
+          .data$suffix == checks[[check_type]]$suffix
+        )
+
+      if (nrow(matching_files) != 1) {
+        missing_files[[check_type]] <- c(
+          missing_files[[check_type]],
+          current_row$file_path
+        )
+      }
+    }
+  }
+  file_type_names <- c(
+    motion_json = "*motion.json",
+    channels_json = "*channels.json",
+    channels_tsv = "*channels.tsv"
+  )
+
+  for (type in names(missing_files)) {
+    if (length(missing_files[[type]]) > 0) {
+      warning(
+        sprintf(
+          "Found %d motion TSV files without corresponding %s.\n",
+          length(missing_files[[type]]),
+          file_type_names[[type]]
+        ),
+        paste("  -", missing_files[[type]], collapse = "\n"),
+        call. = FALSE
+      )
     }
   }
 
-  if (length(missing_json_files) > 0) {
-    warning(
-      sprintf(
-        "Found %d motion TSV files without corresponding JSON sidecar.\n",
-        length(missing_json_files)
-      ),
-      paste("  -", missing_json_files, collapse = "\n"),
-      call. = FALSE
-    )
-  }
-
-  missing_json_files
+  missing_files
 }

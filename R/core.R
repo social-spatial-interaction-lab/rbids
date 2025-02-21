@@ -55,15 +55,14 @@ Bids <- R6Class( # nolint: object_name_linter.
     load_logs = function(...) {
       logs_files <- self$index %>%
         dplyr::filter(datatype == "events", ...)
-
       private$.load_files_with_progress(logs_files)
     },
     #' @description
     #' Print the BIDS dataset summary.
     #' @return NULL
     print = function() {
-      cat("\nBIDS Dataset Summary\n")
-      cat(strrep("=", 22), "\n\n")
+      cat("\nBIDS Dataset Summary\n\n")
+
       cat(sprintf("%-20s %s\n", "Root:", self$root))
       cat(sprintf("%-20s %d\n", "Data Files:", nrow(self$index)))
 
@@ -170,7 +169,6 @@ Bids <- R6Class( # nolint: object_name_linter.
       )
       file_names <- basename(all_files)
       message("Indexing BIDS dataset...")
-      pb <- txtProgressBar(min = 0, max = length(all_files), style = 3)
 
       pattern <- paste0(
         "^",
@@ -210,7 +208,7 @@ Bids <- R6Class( # nolint: object_name_linter.
 
       empty_files <- .check_empty_motion_files(tsv_files)
       .check_valid_tsv_files(tsv_files)
-      missing_json_files <- .check_missing_json_sidecar(self$index)
+      missing_json_files <- .check_missing_meta_files(self$index)
 
       self$index <- self$index %>%
         dplyr::mutate(

@@ -22,17 +22,7 @@ Bids <- R6Class( # nolint: object_name_linter.
     initialize = function(root, readonly = TRUE) {
       .single_character_check(root, "root")
       .bool_check(readonly, "readonly")
-
-      if (!dir.exists(root)) {
-        if (readonly) {
-          stop(sprintf("Root directory `%s` does not exist.", root))
-        } else {
-          warning(
-            sprintf("Directory `%s` does not exist. Creating directory...", root)
-          )
-          dir.create(root, recursive = TRUE)
-        }
-      }
+      .check_root_dir(root, readonly)
 
       self$root <- fs::path_abs(root)
       self$readonly <- readonly
@@ -218,45 +208,13 @@ Bids <- R6Class( # nolint: object_name_linter.
       tsv_files <- self$index %>%
         dplyr::filter(suffix == "tsv" & datatype == "motion", !is.na(subject))
 
-      empty_files <- character(0)
-      if (nrow(tsv_files) > 0) {
-        message("\nChecking motion files...")
-        pb <- txtProgressBar(min = 0, max = nrow(tsv_files), style = 3)
-        for (i in seq_len(nrow(tsv_files))) {
-          file <- tsv_files$file_path[i]
-          file_size <- file.size(file)
-          if (file_size == 0) {
-            empty_files <- c(empty_files, file)
-            next
-          }
-          content <- readr::read_tsv(file, show_col_types = FALSE)
-          if (nrow(content) == 0) {
-            empty_files <- c(empty_files, file)
-          }
-          setTxtProgressBar(pb, i)
-        }
-        close(pb)
-      }
+      empty_files <- .check_empty_motion_files(tsv_files)
+      .check_valid_tsv_files(tsv_files)
 
       self$index <- self$index %>%
         dplyr::mutate(
           is_empty = file_path %in% empty_files
         )
-
-      if (length(empty_files) > 0) {
-        warning(
-          sprintf(
-            "Found %d empty motion data files.\n",
-            length(empty_files)
-          ),
-          paste("  -", empty_files, collapse = "\n"),
-          call. = FALSE
-        )
-      }
-
-      if (nrow(tsv_files) == 0) {
-        stop("No valid TSV files found in dataset.")
-      }
     }
   )
 )

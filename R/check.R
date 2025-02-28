@@ -153,3 +153,20 @@ library(dplyr)
 
   missing_files
 }
+
+#' @keywords Internal
+.check_and_filter_empty_files <- function(files_subset) {
+  empty_files <- files_subset %>%
+    dplyr::filter(.data$is_empty == TRUE)
+
+  if (nrow(empty_files) > 0) {
+    message(sprintf(
+      "Found %d empty files, automatically filtering them out.",
+      nrow(empty_files)
+    ))
+
+    return(files_subset %>% dplyr::filter(.data$is_empty == FALSE))
+  }
+
+  files_subset
+}

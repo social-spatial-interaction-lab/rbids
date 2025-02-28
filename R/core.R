@@ -40,11 +40,14 @@ Bids <- R6Class( # nolint: object_name_linter.
     #' Load the motion files.
     #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
     #' datatype to filter.
+    #' @param empty_check Logical. If TRUE (default), automatically filters out empty.
     #' @return A tibble containing the motion files with participant_id.
-    load_motion = function(...) {
+    load_motion = function(..., empty_check = TRUE) {
       motion_files <- self$index %>%
         dplyr::filter(datatype == "motion", ...)
-
+      if (empty_check) {
+        motion_files <- .check_and_filter_empty_files(motion_files)
+      }
       private$.load_files_with_progress(motion_files)
     },
     #' @description
@@ -136,7 +139,7 @@ Bids <- R6Class( # nolint: object_name_linter.
         warning("No files found.", call. = FALSE)
         return(NULL)
       }
-      message(sprintf("Filtered %d files.\n", nrow(file_subset)))
+      message(sprintf("Filtered %d files, loading...\n", nrow(file_subset)))
       flush.console()
 
       pb <- txtProgressBar(min = 0, max = nrow(file_subset), style = 3)

@@ -179,7 +179,8 @@ Bids <- R6Class( # nolint: object_name_linter.
     # inside, the file's name describes the subject, so we need to merged to help for
     # analysis.
     # param: file_subset A tibble containing the files to merge.
-    # return: A tibble containing the files with subject column.
+    # return: A tibble containing the files with subject, session, task, tracksys, acq,
+    # run columns.
     .merge_with_subject = function(file_subset) {
       if (nrow(file_subset) == 0) {
         warning("No files found.", call. = FALSE)
@@ -197,6 +198,11 @@ Bids <- R6Class( # nolint: object_name_linter.
         df <- readr::read_tsv(file_path, show_col_types = FALSE)
 
         df$participant_id <- file_subset$subject[i]
+        df$session <- file_subset$session[i]
+        df$task <- file_subset$task[i]
+        df$tracksys <- file_subset$tracksys[i]
+        df$acq <- file_subset$acq[i]
+        df$run <- file_subset$run[i]
         data_list[[i]] <- df
         setTxtProgressBar(pb, i)
       }

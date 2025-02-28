@@ -32,6 +32,7 @@ See [BIDS Motion](https://bids-specification.readthedocs.io/en/stable/modality-s
 \item \href{#method-Bids-list_motion}{\code{Bids$list_motion()}}
 \item \href{#method-Bids-load_logs}{\code{Bids$load_logs()}}
 \item \href{#method-Bids-list_logs}{\code{Bids$list_logs()}}
+\item \href{#method-Bids-load_files}{\code{Bids$load_files()}}
 \item \href{#method-Bids-print}{\code{Bids$print()}}
 \item \href{#method-Bids-clone}{\code{Bids$clone()}}
 }
@@ -152,6 +153,26 @@ datatype to filter.}
 }
 \subsection{Returns}{
 A character vector containing the logs files.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Bids-load_files"></a>}}
+\if{latex}{\out{\hypertarget{method-Bids-load_files}{}}}
+\subsection{Method \code{load_files()}}{
+Load files from a vector of file paths.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Bids$load_files(file_paths)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{file_paths}}{A character vector containing file paths to load.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A tibble containing the files with subject.
 }
 }
 \if{html}{\out{<hr>}}

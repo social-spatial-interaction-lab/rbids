@@ -48,7 +48,7 @@ Bids <- R6Class( # nolint: object_name_linter.
       if (empty_check) {
         motion_files <- .check_and_filter_empty_files(motion_files)
       }
-      private$.merge_with_subject(motion_files)
+      private$.merge_with_index(motion_files)
     },
     #' @description
     #' List the motion files.
@@ -69,7 +69,7 @@ Bids <- R6Class( # nolint: object_name_linter.
     load_logs = function(...) {
       logs_files <- self$index %>%
         dplyr::filter(datatype == "events", ...)
-      private$.merge_with_subject(logs_files)
+      private$.merge_with_index(logs_files)
     },
     #' @description
     #' List the logs files.
@@ -100,7 +100,7 @@ Bids <- R6Class( # nolint: object_name_linter.
         )
         return(NULL)
       }
-      private$.merge_with_subject(file_subset)
+      private$.merge_with_index(file_subset)
     },
     #' @description
     #' Print the BIDS dataset summary.
@@ -139,7 +139,7 @@ Bids <- R6Class( # nolint: object_name_linter.
     # param: file_subset A tibble containing the files to merge.
     # return: A tibble containing the files with subject, session, task, tracksys, acq,
     # run columns.
-    .merge_with_subject = function(file_subset) {
+    .merge_with_index = function(file_subset) {
       if (nrow(file_subset) == 0) {
         warning("No files found.", call. = FALSE)
         return(NULL)

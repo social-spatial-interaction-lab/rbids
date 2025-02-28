@@ -41,15 +41,21 @@ Bids <- R6Class( # nolint: object_name_linter.
     #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
     #' datatype to filter.
     #' @param empty_check Logical. If TRUE (default), automatically filters out empty.
-    #' @return A tibble containing the motion files with participant_id and other index
+    #' @param merge_attr A character vector specifying which attributes to merge.
+    #' Default: c("subject", "session", "task", "tracksys", "acq", "run").
+    #' @return A tibble containing the motion files with subject and other index
     #' columns. e.g. session, task, tracksys, acq, run.
-    load_motion = function(..., empty_check = TRUE) {
+    load_motion = function(..., empty_check = TRUE,
+                           merge_attr = c(
+                             "subject",
+                             "session", "task", "tracksys", "acq", "run"
+                           )) {
       motion_files <- self$index %>%
         dplyr::filter(datatype == "motion", suffix == "tsv", ...)
       if (empty_check) {
         motion_files <- .check_and_filter_empty_files(motion_files)
       }
-      private$.merge_with_index(motion_files)
+      private$.merge_with_index(motion_files, merge_attr = merge_attr)
     },
     #' @description
     #' List the motion files.
@@ -66,12 +72,17 @@ Bids <- R6Class( # nolint: object_name_linter.
     #' Load the logs files. E.g. *events.tsv.
     #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
     #' datatype to filter.
-    #' @return A tibble containing the logs files with participant_id and other index
+    #' @param merge_attr A character vector specifying which attributes to merge.
+    #' Default: c("subject", "task").
+    #' @return A tibble containing the logs files with subject and other index
     #' columns. e.g. session, task, tracksys, acq, run.
-    load_logs = function(...) {
+    load_logs = function(...,
+                         merge_attr = c(
+                           "subject", "task"
+                         )) {
       logs_files <- self$index %>%
         dplyr::filter(datatype == "events", suffix == "tsv", ...)
-      private$.merge_with_index(logs_files)
+      private$.merge_with_index(logs_files, merge_attr = merge_attr)
     },
     #' @description
     #' List the logs files.
@@ -87,8 +98,14 @@ Bids <- R6Class( # nolint: object_name_linter.
     #' @description
     #' Load files from a vector of file paths.
     #' @param file_paths A character vector containing file paths to load.
+    #' @param merge_attr A character vector specifying which attributes to merge.
+    #' Default: c("subject", "session", "task", "tracksys", "acq", "run").
     #' @return A tibble containing the files with subject.
-    load_files = function(file_paths) {
+    load_files = function(file_paths,
+                          merge_attr = c(
+                            "subject",
+                            "session", "task", "tracksys", "acq", "run"
+                          )) {
       if (length(file_paths) == 0) {
         warning("No files provided.", call. = FALSE)
         return(NULL)
@@ -102,7 +119,7 @@ Bids <- R6Class( # nolint: object_name_linter.
         )
         return(NULL)
       }
-      private$.merge_with_index(file_subset)
+      private$.merge_with_index(file_subset, merge_attr = merge_attr)
     },
     #' @description
     #' Print the BIDS dataset summary.
@@ -139,13 +156,16 @@ Bids <- R6Class( # nolint: object_name_linter.
     # inside, the file's name describes the subject, so we need to merged to help for
     # analysis.
     # param: file_subset A tibble containing the files to merge.
-    # return: A tibble containing the files with subject, session, task, tracksys, acq,
-    # run columns.
-    .merge_with_index = function(file_subset) {
+    # param: merge_attr A character vector specifying which attributes to merge.
+    #        Default is c("subject", "session", "task", "tracksys", "acq", "run").
+    # return: A tibble containing the files with the specified merged attributes.
+    .merge_with_index = function(file_subset, merge_attr) {
       if (nrow(file_subset) == 0) {
         warning("No files found.", call. = FALSE)
         return(NULL)
       }
+      merge_attr <- .check_merge_attributes(merge_attr)
+
       message(sprintf("Filtered %d files, loading...\n", nrow(file_subset)))
       flush.console()
 
@@ -156,12 +176,10 @@ Bids <- R6Class( # nolint: object_name_linter.
         file_path <- file_subset$file_path[i]
         df <- readr::read_tsv(file_path, show_col_types = FALSE)
 
-        df$participant_id <- file_subset$subject[i]
-        df$session <- file_subset$session[i]
-        df$task <- file_subset$task[i]
-        df$tracksys <- file_subset$tracksys[i]
-        df$acq <- file_subset$acq[i]
-        df$run <- file_subset$run[i]
+        for (attr in merge_attr) {
+          df[[attr]] <- file_subset[[attr]][i]
+        }
+
         data_list[[i]] <- df
         setTxtProgressBar(pb, i)
       }

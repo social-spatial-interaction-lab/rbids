@@ -73,9 +73,13 @@ A tibble containing the participants.tsv file.
 \if{html}{\out{<a id="method-Bids-load_motion"></a>}}
 \if{latex}{\out{\hypertarget{method-Bids-load_motion}{}}}
 \subsection{Method \code{load_motion()}}{
-Load the motion files.
+Load the motion files. E.g. *motion.tsv.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bids$load_motion(..., empty_check = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Bids$load_motion(
+  ...,
+  empty_check = TRUE,
+  merge_attr = c("subject", "session", "task", "tracksys", "acq", "run")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -85,11 +89,15 @@ Load the motion files.
 datatype to filter.}
 
 \item{\code{empty_check}}{Logical. If TRUE (default), automatically filters out empty.}
+
+\item{\code{merge_attr}}{A character vector specifying which attributes to merge.
+Default: c("subject", "session", "task", "tracksys", "acq", "run").}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A tibble containing the motion files with participant_id.
+A tibble containing the motion files with subject and other index
+columns. e.g. session, task, tracksys, acq, run.
 }
 }
 \if{html}{\out{<hr>}}
@@ -117,9 +125,9 @@ A character vector containing the motion files.
 \if{html}{\out{<a id="method-Bids-load_logs"></a>}}
 \if{latex}{\out{\hypertarget{method-Bids-load_logs}{}}}
 \subsection{Method \code{load_logs()}}{
-Load the logs files.
+Load the logs files. E.g. *events.tsv.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bids$load_logs(...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Bids$load_logs(..., merge_attr = c("subject", "task"))}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -127,11 +135,15 @@ Load the logs files.
 \describe{
 \item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
 datatype to filter.}
+
+\item{\code{merge_attr}}{A character vector specifying which attributes to merge.
+Default: c("subject", "task").}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A tibble containing the logs files with participant_id.
+A tibble containing the logs files with subject and other index
+columns. e.g. session, task, tracksys, acq, run.
 }
 }
 \if{html}{\out{<hr>}}
@@ -161,13 +173,19 @@ A character vector containing the logs files.
 \subsection{Method \code{load_files()}}{
 Load files from a vector of file paths.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bids$load_files(file_paths)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Bids$load_files(
+  file_paths,
+  merge_attr = c("subject", "session", "task", "tracksys", "acq", "run")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{file_paths}}{A character vector containing file paths to load.}
+
+\item{\code{merge_attr}}{A character vector specifying which attributes to merge.
+Default: c("subject", "session", "task", "tracksys", "acq", "run").}
 }
 \if{html}{\out{</div>}}
 }

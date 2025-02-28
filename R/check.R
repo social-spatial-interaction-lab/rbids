@@ -170,3 +170,26 @@ library(dplyr)
 
   files_subset
 }
+
+#' Check if merge attributes are valid
+#' @param merge_attr A character vector specifying which attributes to merge.
+#' @return A character vector containing only valid merge attributes.
+#' @keywords Internal
+.check_merge_attributes <- function(merge_attr) {
+  valid_attrs <- c("subject", "session", "task", "tracksys", "acq", "run")
+
+  invalid_attrs <- setdiff(merge_attr, valid_attrs)
+  if (length(invalid_attrs) > 0) {
+    warning(
+      sprintf(
+        "Invalid merge attributes: %s. These will be ignored. You can only merge the
+        following attributes: subject, session, task, tracksys, acq, run",
+        paste(invalid_attrs, collapse = ", ")
+      ),
+      call. = FALSE
+    )
+    return(intersect(merge_attr, valid_attrs))
+  }
+
+  return(merge_attr)
+}

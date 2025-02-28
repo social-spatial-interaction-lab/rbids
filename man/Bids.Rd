@@ -31,6 +31,8 @@ See [BIDS Motion](https://bids-specification.readthedocs.io/en/stable/modality-s
 \item \href{#method-Bids-load_motion}{\code{Bids$load_motion()}}
 \item \href{#method-Bids-list_motion}{\code{Bids$list_motion()}}
 \item \href{#method-Bids-load_logs}{\code{Bids$load_logs()}}
+\item \href{#method-Bids-list_session}{\code{Bids$list_session()}}
+\item \href{#method-Bids-load_session}{\code{Bids$load_session()}}
 \item \href{#method-Bids-list_logs}{\code{Bids$list_logs()}}
 \item \href{#method-Bids-load_files}{\code{Bids$load_files()}}
 \item \href{#method-Bids-print}{\code{Bids$print()}}
@@ -144,6 +146,48 @@ Default: c("subject", "task").}
 \subsection{Returns}{
 A tibble containing the logs files with subject and other index
 columns. e.g. session, task, tracksys, acq, run.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Bids-list_session"></a>}}
+\if{latex}{\out{\hypertarget{method-Bids-list_session}{}}}
+\subsection{Method \code{list_session()}}{
+List the session files.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Bids$list_session(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
+datatype to filter.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character vector containing the session files.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Bids-load_session"></a>}}
+\if{latex}{\out{\hypertarget{method-Bids-load_session}{}}}
+\subsection{Method \code{load_session()}}{
+Load the session files. E.g. *sessions.tsv.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Bids$load_session(..., merge_attr = c("subject", "session"))}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
+datatype to filter.}
+
+\item{\code{merge_attr}}{A character vector specifying which attributes to merge.
+Default: c("subject", "session").}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

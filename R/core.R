@@ -1,7 +1,7 @@
 #' BIDS Dataset Handler
 #'
 #' A class for managing and accessing BIDS(Brain Imaging Data Structure) motions data.
-#' See [BIDS Motion](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/motion.html)
+#' See [BIDS Motion](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/motion.html) for more details.
 #' @param root A character string. The root directory of the BIDS dataset.
 #' @param readonly Logical. Default is TRUE.
 #'
@@ -42,14 +42,11 @@ Bids <- R6Class( # nolint: object_name_linter.
     #' datatype to filter.
     #' @param empty_check Logical. If TRUE (default), automatically filters out empty.
     #' @param merge_attr A character vector specifying which attributes to merge.
-    #' Default: c("subject", "session", "task", "tracksys", "acq", "run").
+    #' Default: c("subject").
     #' @return A tibble containing the motion files with subject and other index
     #' columns. e.g. session, task, tracksys, acq, run.
-    load_motion = function(..., empty_check = TRUE,
-                           merge_attr = c(
-                             "subject",
-                             "session", "task", "tracksys", "acq", "run"
-                           )) {
+    load_motion = function(..., empty_check = TRUE, merge_attr = "subject") {
+      .bool_check(empty_check, "empty_check")
       motion_files <- self$index %>%
         dplyr::filter(datatype == "motion", suffix == "tsv", ...)
       if (empty_check) {
@@ -85,6 +82,28 @@ Bids <- R6Class( # nolint: object_name_linter.
       private$.merge_with_index(logs_files, merge_attr = merge_attr)
     },
     #' @description
+    #' List the session files.
+    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
+    #' datatype to filter.
+    #' @return A character vector containing the session files.
+    list_session = function(...) {
+      result <- self$index %>%
+        dplyr::filter(datatype == "sessions", suffix == "tsv", ...) %>%
+        dplyr::pull(file_path)
+      return(invisible(result))
+    },
+    #' @description
+    #' Load the session files. E.g. *sessions.tsv.
+    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
+    #' datatype to filter.
+    #' @param merge_attr A character vector specifying which attributes to merge.
+    #' Default: c("subject", "session").
+    load_session = function(..., merge_attr = c("subject", "session")) {
+      session_files <- self$index %>%
+        dplyr::filter(datatype == "session", suffix == "tsv", ...)
+      private$.merge_with_index(session_files, merge_attr = merge_attr)
+    },
+    #' @description
     #' List the logs files.
     #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
     #' datatype to filter.
@@ -99,13 +118,9 @@ Bids <- R6Class( # nolint: object_name_linter.
     #' Load files from a vector of file paths.
     #' @param file_paths A character vector containing file paths to load.
     #' @param merge_attr A character vector specifying which attributes to merge.
-    #' Default: c("subject", "session", "task", "tracksys", "acq", "run").
+    #' Default: c("subject").
     #' @return A tibble containing the files with subject.
-    load_files = function(file_paths,
-                          merge_attr = c(
-                            "subject",
-                            "session", "task", "tracksys", "acq", "run"
-                          )) {
+    load_files = function(file_paths, merge_attr = "subject") {
       if (length(file_paths) == 0) {
         warning("No files provided.", call. = FALSE)
         return(NULL)

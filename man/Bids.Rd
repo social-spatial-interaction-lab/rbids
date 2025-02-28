@@ -29,7 +29,9 @@ See [BIDS Motion](https://bids-specification.readthedocs.io/en/stable/modality-s
 \item \href{#method-Bids-new}{\code{Bids$new()}}
 \item \href{#method-Bids-load_participant}{\code{Bids$load_participant()}}
 \item \href{#method-Bids-load_motion}{\code{Bids$load_motion()}}
+\item \href{#method-Bids-list_motion}{\code{Bids$list_motion()}}
 \item \href{#method-Bids-load_logs}{\code{Bids$load_logs()}}
+\item \href{#method-Bids-list_logs}{\code{Bids$list_logs()}}
 \item \href{#method-Bids-print}{\code{Bids$print()}}
 \item \href{#method-Bids-clone}{\code{Bids$clone()}}
 }
@@ -72,7 +74,30 @@ A tibble containing the participants.tsv file.
 \subsection{Method \code{load_motion()}}{
 Load the motion files.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bids$load_motion(...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Bids$load_motion(..., empty_check = TRUE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
+datatype to filter.}
+
+\item{\code{empty_check}}{Logical. If TRUE (default), automatically filters out empty.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A tibble containing the motion files with participant_id.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Bids-list_motion"></a>}}
+\if{latex}{\out{\hypertarget{method-Bids-list_motion}{}}}
+\subsection{Method \code{list_motion()}}{
+List the motion files.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Bids$list_motion(...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -84,7 +109,7 @@ datatype to filter.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A tibble containing the motion files with participant_id.
+A character vector containing the motion files.
 }
 }
 \if{html}{\out{<hr>}}
@@ -109,6 +134,27 @@ A tibble containing the logs files with participant_id.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Bids-list_logs"></a>}}
+\if{latex}{\out{\hypertarget{method-Bids-list_logs}{}}}
+\subsection{Method \code{list_logs()}}{
+List the logs files.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Bids$list_logs(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
+datatype to filter.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character vector containing the logs files.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Bids-print"></a>}}
 \if{latex}{\out{\hypertarget{method-Bids-print}{}}}
 \subsection{Method \code{print()}}{
@@ -117,9 +163,6 @@ Print the BIDS dataset summary.
 \if{html}{\out{<div class="r">}}\preformatted{Bids$print()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-NULL
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Bids-clone"></a>}}

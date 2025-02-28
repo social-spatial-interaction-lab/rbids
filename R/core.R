@@ -48,7 +48,18 @@ Bids <- R6Class( # nolint: object_name_linter.
       if (empty_check) {
         motion_files <- .check_and_filter_empty_files(motion_files)
       }
-      private$.load_files_with_progress(motion_files)
+      private$.merge_with_subject(motion_files)
+    },
+    #' @description
+    #' List the motion files.
+    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
+    #' datatype to filter.
+    #' @return A character vector containing the motion files.
+    list_motion = function(...) {
+      result <- self$index %>%
+        dplyr::filter(datatype == "motion", suffix == "tsv", ...) %>%
+        dplyr::pull(file_path)
+      return(invisible(result))
     },
     #' @description
     #' Load the logs files.
@@ -58,11 +69,21 @@ Bids <- R6Class( # nolint: object_name_linter.
     load_logs = function(...) {
       logs_files <- self$index %>%
         dplyr::filter(datatype == "events", ...)
-      private$.load_files_with_progress(logs_files)
+      private$.merge_with_subject(logs_files)
+    },
+    #' @description
+    #' List the logs files.
+    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
+    #' datatype to filter.
+    #' @return A character vector containing the logs files.
+    list_logs = function(...) {
+      result <- self$index %>%
+        dplyr::filter(datatype == "events", suffix == "tsv", ...) %>%
+        dplyr::pull(file_path)
+      return(invisible(result))
     },
     #' @description
     #' Print the BIDS dataset summary.
-    #' @return NULL
     print = function() {
       cat("\nBIDS Dataset Summary\n\n")
 
@@ -134,7 +155,12 @@ Bids <- R6Class( # nolint: object_name_linter.
     }
   ),
   private = list(
-    .load_files_with_progress = function(file_subset) {
+    # Merge the files with subject. The motion data files doesn't have subject info
+    # inside, the file's name describes the subject, so we need to merged to help for
+    # analysis.
+    # param: file_subset A tibble containing the files to merge.
+    # return: A tibble containing the files with subject column.
+    .merge_with_subject = function(file_subset) {
       if (nrow(file_subset) == 0) {
         warning("No files found.", call. = FALSE)
         return(NULL)

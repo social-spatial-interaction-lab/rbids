@@ -83,6 +83,26 @@ Bids <- R6Class( # nolint: object_name_linter.
       return(invisible(result))
     },
     #' @description
+    #' Load files from a vector of file paths.
+    #' @param file_paths A character vector containing file paths to load.
+    #' @return A tibble containing the files with subject.
+    load_files = function(file_paths) {
+      if (length(file_paths) == 0) {
+        warning("No files provided.", call. = FALSE)
+        return(NULL)
+      }
+      file_subset <- self$index %>%
+        dplyr::filter(file_path %in% file_paths)
+      if (nrow(file_subset) == 0) {
+        warning("None of the provided file paths match the index. Are you sure the file
+        paths are correct?",
+          call. = FALSE
+        )
+        return(NULL)
+      }
+      private$.merge_with_subject(file_subset)
+    },
+    #' @description
     #' Print the BIDS dataset summary.
     print = function() {
       cat("\nBIDS Dataset Summary\n\n")

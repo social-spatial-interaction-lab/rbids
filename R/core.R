@@ -67,7 +67,7 @@ Bids <- R6Class( # nolint: object_name_linter.
       cat("\nBIDS Dataset Summary\n\n")
 
       cat(sprintf("%-20s %s\n", "Root:", self$root))
-      cat(sprintf("%-20s %d\n", "Data Files:", nrow(self$index)))
+      cat(sprintf("%-20s %d\n", "Files:", nrow(self$index)))
 
       subject_count <- length(unique(self$index$subject))
       subjects <- paste(

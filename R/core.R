@@ -115,54 +115,12 @@ Bids <- R6Class( # nolint: object_name_linter.
         paste(head(sort(unique(self$index$subject)), 5), collapse = ", "),
         "..."
       )
-
-      session_values <- self$index$session
-      session_values <- session_values[!is.na(session_values)]
-      sessions <- if (length(session_values) > 0) {
-        paste(sort(unique(session_values)), collapse = ", ")
-      } else {
-        "None"
-      }
-
-      task_values <- self$index$task
-      task_values <- task_values[!is.na(task_values)]
-      tasks <- if (length(task_values) > 0) {
-        paste(sort(unique(task_values)), collapse = ", ")
-      } else {
-        "None"
-      }
-
-      datatype_values <- self$index$datatype
-      datatype_values <- datatype_values[!is.na(datatype_values)]
-      datatypes <- if (length(datatype_values) > 0) {
-        paste(sort(unique(datatype_values)), collapse = ", ")
-      } else {
-        "None"
-      }
-
-      tracksys_values <- self$index$tracksys
-      tracksys_values <- tracksys_values[!is.na(tracksys_values)]
-      tracksys <- if (length(tracksys_values) > 0) {
-        paste(sort(unique(tracksys_values)), collapse = ", ")
-      } else {
-        "None"
-      }
-
-      acq_values <- self$index$acq
-      acq_values <- acq_values[!is.na(acq_values)]
-      acq <- if (length(acq_values) > 0) {
-        paste(sort(unique(acq_values)), collapse = ", ")
-      } else {
-        "None"
-      }
-
-      run_values <- self$index$run
-      run_values <- run_values[!is.na(run_values)]
-      run <- if (length(run_values) > 0) {
-        paste(sort(unique(run_values)), collapse = ", ")
-      } else {
-        "None"
-      }
+      sessions <- private$.format_attribute_values(self$index$session)
+      tasks <- private$.format_attribute_values(self$index$task)
+      datatypes <- private$.format_attribute_values(self$index$datatype)
+      tracksys <- private$.format_attribute_values(self$index$tracksys)
+      acq <- private$.format_attribute_values(self$index$acq)
+      run <- private$.format_attribute_values(self$index$run)
 
       cat(sprintf("%-20s %d\n", "Total Subjects:", subject_count))
       cat(sprintf("%-20s %s\n", "Subjects:", subjects))
@@ -191,7 +149,6 @@ Bids <- R6Class( # nolint: object_name_linter.
 
       pb <- txtProgressBar(min = 0, max = nrow(file_subset), style = 3)
       data_list <- vector("list", nrow(file_subset))
-      problematic_files <- character(0)
 
       for (i in seq_len(nrow(file_subset))) {
         file_path <- file_subset$file_path[i]
@@ -207,12 +164,6 @@ Bids <- R6Class( # nolint: object_name_linter.
         setTxtProgressBar(pb, i)
       }
       close(pb)
-
-      if (length(problematic_files) > 0) {
-        warning("The following files have issues, data type conflict:", call. = FALSE)
-        print(problematic_files)
-        stop("Data merge failed. Please check the problematic files.")
-      }
 
       dplyr::bind_rows(data_list)
     },
@@ -270,6 +221,14 @@ Bids <- R6Class( # nolint: object_name_linter.
           is_empty = file_path %in% empty_files,
           missing_json = file_path %in% missing_json_files
         )
+    },
+    .format_attribute_values = function(values) {
+      values <- values[!is.na(values)]
+      if (length(values) > 0) {
+        paste(sort(unique(values)), collapse = ", ")
+      } else {
+        "None"
+      }
     }
   )
 )

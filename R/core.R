@@ -37,14 +37,15 @@ Bids <- R6Class( # nolint: object_name_linter.
       readr::read_tsv(file_path, show_col_types = FALSE)
     },
     #' @description
-    #' Load the motion files.
+    #' Load the motion files. E.g. *motion.tsv.
     #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
     #' datatype to filter.
     #' @param empty_check Logical. If TRUE (default), automatically filters out empty.
-    #' @return A tibble containing the motion files with participant_id.
+    #' @return A tibble containing the motion files with participant_id and other index
+    #' columns. e.g. session, task, tracksys, acq, run.
     load_motion = function(..., empty_check = TRUE) {
       motion_files <- self$index %>%
-        dplyr::filter(datatype == "motion", ...)
+        dplyr::filter(datatype == "motion", suffix == "tsv", ...)
       if (empty_check) {
         motion_files <- .check_and_filter_empty_files(motion_files)
       }
@@ -62,13 +63,14 @@ Bids <- R6Class( # nolint: object_name_linter.
       return(invisible(result))
     },
     #' @description
-    #' Load the logs files.
+    #' Load the logs files. E.g. *events.tsv.
     #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
     #' datatype to filter.
-    #' @return A tibble containing the logs files with participant_id.
+    #' @return A tibble containing the logs files with participant_id and other index
+    #' columns. e.g. session, task, tracksys, acq, run.
     load_logs = function(...) {
       logs_files <- self$index %>%
-        dplyr::filter(datatype == "events", ...)
+        dplyr::filter(datatype == "events", suffix == "tsv", ...)
       private$.merge_with_index(logs_files)
     },
     #' @description

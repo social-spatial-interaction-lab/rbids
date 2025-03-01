@@ -45,7 +45,8 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
     #' Default: c("subject").
     #' @param type_check Character. Determines how to handle type conflicts across
     #' files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
-    #' resolve conflicts.
+    #' resolve conflicts. In auto mode, numeric conversion is attempted first if
+    #' possible (all values can be converted), otherwise character conversion is used.
     #' @return A tibble containing the motion files with subject and other index
     #' columns. e.g. session, task, tracksys, acq, run.
     load_motion = function(..., empty_check = TRUE, merge_attr = "subject",
@@ -69,7 +70,8 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
     #' Default: c("subject", "task").
     #' @param type_check Character. Determines how to handle type conflicts across
     #' files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
-    #' resolve conflicts.
+    #' resolve conflicts. In auto mode, numeric conversion is attempted first if
+    #' possible (all values can be converted), otherwise character conversion is used.
     #' @return A tibble containing the logs files with subject and other index
     #' columns. e.g. session, task, tracksys, acq, run.
     load_logs = function(..., merge_attr = c("subject", "task"),
@@ -90,7 +92,8 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
     #' Default: c("subject", "session").
     #' @param type_check Character. Determines how to handle type conflicts across
     #' files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
-    #' resolve conflicts.
+    #' resolve conflicts. In auto mode, numeric conversion is attempted first if
+    #' possible (all values can be converted), otherwise character conversion is used.
     load_session = function(..., merge_attr = c("subject", "session"),
                             type_check = "strict") {
       session_files <- self$index %>%
@@ -109,12 +112,12 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
     #' Default: c("subject").
     #' @param type_check Character. Determines how to handle type conflicts across
     #' files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
-    #' resolve conflicts.
+    #' resolve conflicts. In auto mode, numeric conversion is attempted first if
+    #' possible (all values can be converted), otherwise character conversion is used.
     #' @return A tibble containing the files with subject.
-    load_files = function(
-        file_paths,
-        empty_check = TRUE, merge_attr = "subject",
-        type_check = "strict") {
+    load_files = function(file_paths,
+                          empty_check = TRUE, merge_attr = "subject",
+                          type_check = "strict") {
       if (length(file_paths) == 0) {
         warning("No files provided.", call. = FALSE)
         return(NULL)

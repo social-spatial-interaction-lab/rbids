@@ -98,7 +98,8 @@ Default: c("subject").}
 
 \item{\code{type_check}}{Character. Determines how to handle type conflicts across
 files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
-resolve conflicts.}
+resolve conflicts. In auto mode, numeric conversion is attempted first if
+possible (all values can be converted), otherwise character conversion is used.}
 }
 \if{html}{\out{</div>}}
 }
@@ -127,7 +128,8 @@ Default: c("subject", "task").}
 
 \item{\code{type_check}}{Character. Determines how to handle type conflicts across
 files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
-resolve conflicts.}
+resolve conflicts. In auto mode, numeric conversion is attempted first if
+possible (all values can be converted), otherwise character conversion is used.}
 }
 \if{html}{\out{</div>}}
 }
@@ -160,7 +162,8 @@ Default: c("subject", "session").}
 
 \item{\code{type_check}}{Character. Determines how to handle type conflicts across
 files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
-resolve conflicts.}
+resolve conflicts. In auto mode, numeric conversion is attempted first if
+possible (all values can be converted), otherwise character conversion is used.}
 }
 \if{html}{\out{</div>}}
 }
@@ -191,7 +194,8 @@ Default: c("subject").}
 
 \item{\code{type_check}}{Character. Determines how to handle type conflicts across
 files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
-resolve conflicts.}
+resolve conflicts. In auto mode, numeric conversion is attempted first if
+possible (all values can be converted), otherwise character conversion is used.}
 }
 \if{html}{\out{</div>}}
 }

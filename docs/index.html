@@ -56,27 +56,119 @@
       </header><div class="row">
   <div class="contents col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="rbids---the-r-interface-to-the-brain-imagining-data-structure">rbids - the R interface to the Brain Imagining Data Structure<a class="anchor" aria-label="anchor" href="#rbids---the-r-interface-to-the-brain-imagining-data-structure"></a>
+<div class="page-header"><h1 id="rbids-r-interface-for-bids-motion-data">rbids: R Interface for BIDS Motion Data<a class="anchor" aria-label="anchor" href="#rbids-r-interface-for-bids-motion-data"></a>
 </h1></div>
-<p>BIDS is cool!</p>
-<p>I work in R, and it solves my problems for standardized datasets.</p>
 <div class="section level2">
-<h2 id="quick-sample">Quick Sample<a class="anchor" aria-label="anchor" href="#quick-sample"></a>
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p><code>rbids</code> is an R package for managing and accessing Brain Imaging Data Structure (BIDS) motion data. It provides a simple interface to work with BIDS-formatted datasets, making it easier to load, filter, and analyze motion data.</p>
+</div>
+<div class="section level2">
+<h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rbids</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">bids</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/Bids.html">Bids</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>root <span class="op">=</span> <span class="st">"/Users/fengsifang/Documents/PuzzleProjectBIDS"</span><span class="op">)</span></span>
+<span><span class="co"># Initialize a BIDS dataset</span></span>
+<span><span class="va">bids</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/Bids.html">Bids</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"/path/to/bids/dataset"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">valid_participants</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_participant</span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Anomaly</span> <span class="op">==</span> <span class="st">"No"</span><span class="op">)</span></span>
+<span><span class="co"># Load motion data</span></span>
+<span><span class="va">motion_data</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_motion</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">motion_data</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_motion</span><span class="op">(</span></span>
-<span>  <span class="va">tracksys</span> <span class="op">==</span> <span class="st">"LeftControllerStabilizedMovement"</span>,</span>
-<span>  <span class="va">subject</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">valid_participants</span><span class="op">$</span><span class="va">participant_id</span></span>
+<span><span class="co"># Load motion data with filters</span></span>
+<span><span class="va">filtered_motion</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_motion</span><span class="op">(</span>task <span class="op">=</span> <span class="st">"rest"</span>, subject <span class="op">=</span> <span class="st">"sub-01"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load event logs</span></span>
+<span><span class="va">event_logs</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_logs</span><span class="op">(</span>task <span class="op">=</span> <span class="st">"rest"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load session data</span></span>
+<span><span class="va">session_data</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_session</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
+</h2>
+<ul>
+<li>
+<strong>Easy BIDS Navigation</strong>: Automatically indexes and provides access to BIDS-compliant datasets</li>
+<li>
+<strong>Flexible Data Loading</strong>: Load motion files, event logs, and session information with powerful filtering options</li>
+<li>
+<strong>Intelligent Type Handling</strong>: Automatic detection and resolution of data type conflicts across files</li>
+<li>
+<strong>Dataset Summary</strong>: Quick overview of dataset contents including subjects, sessions, tasks, and datatypes</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="detailed-documentation">Detailed Documentation<a class="anchor" aria-label="anchor" href="#detailed-documentation"></a>
+</h2>
+<div class="section level3">
+<h3 id="creating-a-bids-object">Creating a BIDS Object<a class="anchor" aria-label="anchor" href="#creating-a-bids-object"></a>
+</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a BIDS object with read-only access (default)</span></span>
+<span><span class="va">bids</span> <span class="op">&lt;-</span> <span class="va"><a href="reference/Bids.html">Bids</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"/path/to/bids/dataset"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="loading-data">Loading Data<a class="anchor" aria-label="anchor" href="#loading-data"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load all motion data</span></span>
+<span><span class="va">motion_data</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_motion</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Filter by subject, task, session, etc.</span></span>
+<span><span class="va">filtered_data</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_motion</span><span class="op">(</span></span>
+<span>  subject <span class="op">=</span> <span class="st">"sub-01"</span>,</span>
+<span>  task <span class="op">=</span> <span class="st">"rest"</span>,</span>
+<span>  session <span class="op">=</span> <span class="st">"01"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">log_files</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_logs</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Load participant information</span></span>
+<span><span class="va">participants</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_participant</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load event logs</span></span>
+<span><span class="va">events</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_logs</span><span class="op">(</span>task <span class="op">=</span> <span class="st">"rest"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load session data</span></span>
+<span><span class="va">sessions</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_session</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="listing-files">Listing Files<a class="anchor" aria-label="anchor" href="#listing-files"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># List motion files</span></span>
+<span><span class="va">motion_files</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">list_motion</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># List motion files with filters</span></span>
+<span><span class="va">filtered_files</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">list_motion</span><span class="op">(</span>subject <span class="op">=</span> <span class="st">"sub-01"</span>, task <span class="op">=</span> <span class="st">"rest"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># List log files</span></span>
+<span><span class="va">log_files</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">list_logs</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># List session files</span></span>
+<span><span class="va">session_files</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">list_session</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="loading-custom-files">Loading Custom Files<a class="anchor" aria-label="anchor" href="#loading-custom-files"></a>
+</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load specific files by path</span></span>
+<span><span class="va">files</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_files</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"/path/to/file1.tsv"</span>, <span class="st">"/path/to/file2.tsv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="data-type-conflict-handling">Data Type Conflict Handling<a class="anchor" aria-label="anchor" href="#data-type-conflict-handling"></a>
+</h2>
+<p>The package intelligently handles data type conflicts between files with two modes:</p>
+<ul>
+<li>
+<strong>strict mode</strong> (default): Aborts loading when data type conflicts are detected</li>
+<li>
+<strong>auto mode</strong>: Automatically resolves conflicts by converting to appropriate types</li>
+</ul>
+<p>In auto mode, numeric conversion is attempted first if possible (all values can be converted), otherwise character conversion is used.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Auto-resolve type conflicts</span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">bids</span><span class="op">$</span><span class="fu">load_motion</span><span class="op">(</span>type_check <span class="op">=</span> <span class="st">"auto"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </div>

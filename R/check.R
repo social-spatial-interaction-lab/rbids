@@ -193,3 +193,10 @@ library(dplyr)
 
   return(merge_attr)
 }
+
+#' @keywords Internal
+.check_type_attributes <- function(type_check) {
+  if (!type_check %in% c("auto", "strict")) {
+    stop("type_check must be either 'auto' or 'strict'", call. = FALSE)
+  }
+}

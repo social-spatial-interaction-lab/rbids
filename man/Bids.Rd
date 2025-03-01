@@ -10,7 +10,7 @@ BIDS Dataset Handler
 }
 \details{
 A class for managing and accessing BIDS(Brain Imaging Data Structure) motions data.
-See [BIDS Motion](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/motion.html)
+See [BIDS Motion](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/motion.html) for more details.
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -80,7 +80,8 @@ Load the motion files. E.g. *motion.tsv.
 \if{html}{\out{<div class="r">}}\preformatted{Bids$load_motion(
   ...,
   empty_check = TRUE,
-  merge_attr = c("subject", "session", "task", "tracksys", "acq", "run")
+  merge_attr = "subject",
+  type_check = "strict"
 )}\if{html}{\out{</div>}}
 }
 
@@ -93,7 +94,11 @@ datatype to filter.}
 \item{\code{empty_check}}{Logical. If TRUE (default), automatically filters out empty.}
 
 \item{\code{merge_attr}}{A character vector specifying which attributes to merge.
-Default: c("subject", "session", "task", "tracksys", "acq", "run").}
+Default: c("subject").}
+
+\item{\code{type_check}}{Character. Determines how to handle type conflicts across
+files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
+resolve conflicts.}
 }
 \if{html}{\out{</div>}}
 }
@@ -129,7 +134,7 @@ A character vector containing the motion files.
 \subsection{Method \code{load_logs()}}{
 Load the logs files. E.g. *events.tsv.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bids$load_logs(..., merge_attr = c("subject", "task"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Bids$load_logs(..., merge_attr = c("subject", "task"), type_check = "strict")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -140,6 +145,10 @@ datatype to filter.}
 
 \item{\code{merge_attr}}{A character vector specifying which attributes to merge.
 Default: c("subject", "task").}
+
+\item{\code{type_check}}{Character. Determines how to handle type conflicts across
+files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
+resolve conflicts.}
 }
 \if{html}{\out{</div>}}
 }
@@ -175,7 +184,11 @@ A character vector containing the session files.
 \subsection{Method \code{load_session()}}{
 Load the session files. E.g. *sessions.tsv.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bids$load_session(..., merge_attr = c("subject", "session"))}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Bids$load_session(
+  ...,
+  merge_attr = c("subject", "session"),
+  type_check = "strict"
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -186,6 +199,10 @@ datatype to filter.}
 
 \item{\code{merge_attr}}{A character vector specifying which attributes to merge.
 Default: c("subject", "session").}
+
+\item{\code{type_check}}{Character. Determines how to handle type conflicts across
+files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
+resolve conflicts.}
 }
 \if{html}{\out{</div>}}
 }
@@ -219,7 +236,9 @@ Load files from a vector of file paths.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Bids$load_files(
   file_paths,
-  merge_attr = c("subject", "session", "task", "tracksys", "acq", "run")
+  empty_check = TRUE,
+  merge_attr = "subject",
+  type_check = "strict"
 )}\if{html}{\out{</div>}}
 }
 
@@ -228,8 +247,14 @@ Load files from a vector of file paths.
 \describe{
 \item{\code{file_paths}}{A character vector containing file paths to load.}
 
+\item{\code{empty_check}}{Logical. If TRUE (default), automatically filters out empty.}
+
 \item{\code{merge_attr}}{A character vector specifying which attributes to merge.
-Default: c("subject", "session", "task", "tracksys", "acq", "run").}
+Default: c("subject").}
+
+\item{\code{type_check}}{Character. Determines how to handle type conflicts across
+files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
+resolve conflicts.}
 }
 \if{html}{\out{</div>}}
 }

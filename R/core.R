@@ -62,17 +62,6 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
       )
     },
     #' @description
-    #' List the motion files.
-    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
-    #' datatype to filter.
-    #' @return A character vector containing the motion files.
-    list_motion = function(...) {
-      result <- self$index %>%
-        dplyr::filter(datatype == "motion", suffix == "tsv", ...) %>%
-        dplyr::pull(file_path)
-      return(invisible(result))
-    },
-    #' @description
     #' Load the logs files. E.g. *events.tsv.
     #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
     #' datatype to filter.
@@ -94,17 +83,6 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
       )
     },
     #' @description
-    #' List the session files.
-    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
-    #' datatype to filter.
-    #' @return A character vector containing the session files.
-    list_session = function(...) {
-      result <- self$index %>%
-        dplyr::filter(datatype == "sessions", suffix == "tsv", ...) %>%
-        dplyr::pull(file_path)
-      return(invisible(result))
-    },
-    #' @description
     #' Load the session files. E.g. *sessions.tsv.
     #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
     #' datatype to filter.
@@ -122,17 +100,6 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
         merge_attr = merge_attr,
         type_check = type_check
       )
-    },
-    #' @description
-    #' List the logs files.
-    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
-    #' datatype to filter.
-    #' @return A character vector containing the logs files.
-    list_logs = function(...) {
-      result <- self$index %>%
-        dplyr::filter(datatype == "events", suffix == "tsv", ...) %>%
-        dplyr::pull(file_path)
-      return(invisible(result))
     },
     #' @description
     #' Load files from a vector of file paths.
@@ -169,6 +136,39 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
         file_subset,
         merge_attr = merge_attr, type_check = type_check
       )
+    },
+    #' @description
+    #' List the motion files.
+    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
+    #' datatype to filter.
+    #' @return A character vector containing the motion files.
+    list_motion = function(...) {
+      result <- self$index %>%
+        dplyr::filter(datatype == "motion", suffix == "tsv", ...) %>%
+        dplyr::pull(file_path)
+      return(invisible(result))
+    },
+    #' @description
+    #' List the logs files.
+    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
+    #' datatype to filter.
+    #' @return A character vector containing the logs files.
+    list_logs = function(...) {
+      result <- self$index %>%
+        dplyr::filter(datatype == "events", suffix == "tsv", ...) %>%
+        dplyr::pull(file_path)
+      return(invisible(result))
+    },
+    #' @description
+    #' List the session files.
+    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
+    #' datatype to filter.
+    #' @return A character vector containing the session files.
+    list_session = function(...) {
+      result <- self$index %>%
+        dplyr::filter(datatype == "sessions", suffix == "tsv", ...) %>%
+        dplyr::pull(file_path)
+      return(invisible(result))
     },
     #' @description
     #' Print the BIDS dataset summary.

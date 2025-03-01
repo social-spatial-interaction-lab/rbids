@@ -79,8 +79,6 @@ library(dplyr)
   }
 }
 
-#' This function checks if a *motion.tsv file has
-#' corresponding *motion.json, *channels.tsv and *channels.json files.
 #' @keywords Internal
 .check_missing_meta_files <- function(index_data) {
   motion_tsv_files <- index_data %>%
@@ -171,9 +169,6 @@ library(dplyr)
   files_subset
 }
 
-#' Check if merge attributes are valid
-#' @param merge_attr A character vector specifying which attributes to merge.
-#' @return A character vector containing only valid merge attributes.
 #' @keywords Internal
 .check_merge_attributes <- function(merge_attr) {
   valid_attrs <- c("subject", "session", "task", "tracksys", "acq", "run")

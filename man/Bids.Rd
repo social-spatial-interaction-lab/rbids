@@ -29,12 +29,12 @@ See [BIDS Motion](https://bids-specification.readthedocs.io/en/stable/modality-s
 \item \href{#method-Bids-new}{\code{Bids$new()}}
 \item \href{#method-Bids-load_participant}{\code{Bids$load_participant()}}
 \item \href{#method-Bids-load_motion}{\code{Bids$load_motion()}}
-\item \href{#method-Bids-list_motion}{\code{Bids$list_motion()}}
 \item \href{#method-Bids-load_logs}{\code{Bids$load_logs()}}
-\item \href{#method-Bids-list_session}{\code{Bids$list_session()}}
 \item \href{#method-Bids-load_session}{\code{Bids$load_session()}}
-\item \href{#method-Bids-list_logs}{\code{Bids$list_logs()}}
 \item \href{#method-Bids-load_files}{\code{Bids$load_files()}}
+\item \href{#method-Bids-list_motion}{\code{Bids$list_motion()}}
+\item \href{#method-Bids-list_logs}{\code{Bids$list_logs()}}
+\item \href{#method-Bids-list_session}{\code{Bids$list_session()}}
 \item \href{#method-Bids-print}{\code{Bids$print()}}
 \item \href{#method-Bids-clone}{\code{Bids$clone()}}
 }
@@ -108,27 +108,6 @@ columns. e.g. session, task, tracksys, acq, run.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Bids-list_motion"></a>}}
-\if{latex}{\out{\hypertarget{method-Bids-list_motion}{}}}
-\subsection{Method \code{list_motion()}}{
-List the motion files.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bids$list_motion(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
-datatype to filter.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A character vector containing the motion files.
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Bids-load_logs"></a>}}
 \if{latex}{\out{\hypertarget{method-Bids-load_logs}{}}}
 \subsection{Method \code{load_logs()}}{
@@ -158,27 +137,6 @@ columns. e.g. session, task, tracksys, acq, run.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Bids-list_session"></a>}}
-\if{latex}{\out{\hypertarget{method-Bids-list_session}{}}}
-\subsection{Method \code{list_session()}}{
-List the session files.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bids$list_session(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
-datatype to filter.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A character vector containing the session files.
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Bids-load_session"></a>}}
 \if{latex}{\out{\hypertarget{method-Bids-load_session}{}}}
 \subsection{Method \code{load_session()}}{
@@ -205,27 +163,6 @@ files. Use "strict" (default) to abort on conflicts, or "auto" to automatically
 resolve conflicts.}
 }
 \if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Bids-list_logs"></a>}}
-\if{latex}{\out{\hypertarget{method-Bids-list_logs}{}}}
-\subsection{Method \code{list_logs()}}{
-List the logs files.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Bids$list_logs(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
-datatype to filter.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A character vector containing the logs files.
 }
 }
 \if{html}{\out{<hr>}}
@@ -260,6 +197,69 @@ resolve conflicts.}
 }
 \subsection{Returns}{
 A tibble containing the files with subject.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Bids-list_motion"></a>}}
+\if{latex}{\out{\hypertarget{method-Bids-list_motion}{}}}
+\subsection{Method \code{list_motion()}}{
+List the motion files.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Bids$list_motion(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
+datatype to filter.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character vector containing the motion files.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Bids-list_logs"></a>}}
+\if{latex}{\out{\hypertarget{method-Bids-list_logs}{}}}
+\subsection{Method \code{list_logs()}}{
+List the logs files.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Bids$list_logs(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
+datatype to filter.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character vector containing the logs files.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-Bids-list_session"></a>}}
+\if{latex}{\out{\hypertarget{method-Bids-list_session}{}}}
+\subsection{Method \code{list_session()}}{
+List the session files.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Bids$list_session(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
+datatype to filter.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A character vector containing the session files.
 }
 }
 \if{html}{\out{<hr>}}

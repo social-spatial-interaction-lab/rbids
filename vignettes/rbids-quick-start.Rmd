@@ -9,7 +9,7 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
+  collapse = FALSE,
   comment = "#>"
 )
 ```
@@ -29,8 +29,6 @@ The `rbids` package is designed to streamline several key workflows:
 - **Data Preprocessing**: Filter, merge, and prepare data for analysis
 - **Type Conflict Resolution**: Automatically handle type conflicts when merging data from multiple files
 
-Whether you're working with motion capture data, IMU sensors, or other motion-related neuroimaging data, `rbids` provides the tools to make your workflow more efficient and reproducible.
-
 # Installation
 
 You can install the development version from GitHub:
@@ -49,7 +47,11 @@ Let's begin by loading the package and creating a `Bids` object:
 library(rbids)
 
 # Initialize a Bids object with the path to your BIDS dataset
-bids <- Bids$new(root = "/Users/fengsifang/Documents/PuzzleProjectBIDS")
+# bids <- Bids$new(root = "/path/to/bids/dataset")
+
+# We use example data here for showing
+data("example_bids")
+bids <- example_bids
 ```
 
 ## Parameters
@@ -83,8 +85,9 @@ When you initialize a `Bids` object, it automatically builds an index of all fil
 The index is stored in the `index` field of the `Bids` object as a tibble:
 
 ```{r}
-# View the first few rows of the index
-head(bids$index)
+library(DT)
+
+datatable(bids$index, options = list(scrollX = TRUE))
 ```
 
 ## Index Fields
@@ -177,7 +180,7 @@ motion_data <- bids$load_files(filtered_files)
 
 ### Loading Event Logs
 
-```{r}
+```{r eval=FALSE}
 # Load all event logs
 events <- bids$load_logs()
 

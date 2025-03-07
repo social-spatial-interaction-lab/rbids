@@ -4,3 +4,5 @@
 .Ruserdata
 .idea
 dev
+inst/doc
+docs

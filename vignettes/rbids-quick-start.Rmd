@@ -1,0 +1,359 @@
+---
+title: "Getting Started with rbids"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with rbids}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+## About rbids
+
+The `rbids` package provides a comprehensive solution for working with Brain Imaging Data Structure (BIDS) formatted data in R. BIDS is a standardized way to organize neuroimaging and behavioral data, making it easier to share, analyze, and archive research data. This package specifically focuses on handling motion data within the BIDS framework, as specified in the [BIDS Motion specification](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/motion.html).
+
+## Use Cases
+
+The `rbids` package is designed to streamline several key workflows:
+
+- **Data Exploration**: Quickly index and summarize BIDS datasets to understand their structure and contents
+- **Data Loading**: Efficiently load motion data, event logs, and participant information
+- **Data Preprocessing**: Filter, merge, and prepare data for analysis
+- **Type Conflict Resolution**: Automatically handle type conflicts when merging data from multiple files
+
+Whether you're working with motion capture data, IMU sensors, or other motion-related neuroimaging data, `rbids` provides the tools to make your workflow more efficient and reproducible.
+
+# Installation
+
+You can install the development version from GitHub:
+
+```{r, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("social-spatial-interaction-lab/rbids")
+```
+
+
+# Quick Start
+
+Let's begin by loading the package and creating a `Bids` object:
+
+```{r}
+library(rbids)
+
+# Initialize a Bids object with the path to your BIDS dataset
+bids <- Bids$new(root = "/Users/fengsifang/Documents/PuzzleProjectBIDS")
+```
+
+## Parameters
+
+- `root`: The path to the root directory of your BIDS dataset
+- `readonly`: Logical value indicating whether the dataset should be opened in read-only mode (default: `TRUE`)
+
+When you create a `Bids` object, it automatically scans the directory structure, indexes all files, and provides a summary of the dataset:
+
+```{r eval=FALSE}
+# Print the dataset summary
+bids$print()
+```
+
+This will display information about the dataset, including:
+- Total number of files
+- Number of subjects
+- Available sessions, tasks, datatypes, etc.
+
+# Data Indexing and Structure
+
+## Indexing Process
+
+When you initialize a `Bids` object, it automatically builds an index of all files in the dataset by:
+
+1. Scanning the entire directory structure recursively
+2. Parsing filenames according to BIDS conventions
+3. Extracting key metadata from the filenames
+4. Checking for empty files and missing metadata files
+
+The index is stored in the `index` field of the `Bids` object as a tibble:
+
+```{r}
+# View the first few rows of the index
+head(bids$index)
+```
+
+## Index Fields
+
+The index contains the following fields:
+
+- `file_path`: The full path to the file
+- `subject`: Subject identifier ("sub-<label>")
+- `session`: Session identifier ("ses-<label>")
+- `task`: Task identifier ("task-<label>")
+- `tracksys`: Tracking system identifier ("tracksys-<label>")
+- `acq`: Acquisition identifier ("acq-<label>")
+- `run`: Run number ("run-<index>")
+- `datatype`: Data type (e.g., "motion", "events")
+- `suffix`: File suffix (e.g., "tsv", "json")
+- `is_empty`: Logical indicating whether the file is empty
+- `missing_json`: Logical indicating whether the motion data's corresponding JSON metadata file is missing
+
+Note: The `subject` must include the `sub-` prefix because `participant_id` is used this way.
+
+# Core Functionality
+
+## Loading Data Files
+The load* function merges motion, logs, and session files with the selected index 
+information ("subject", "session", "task", "tracksys", "acq", "run"), checks variable 
+types, and automatically resolves conflicts.
+
+### Loading Participant Information
+
+```{r}
+# Load participants.tsv file
+participants <- bids$load_participant()
+head(participants)
+```
+
+### Loading Motion Data
+
+```{r eval=FALSE}
+# Load all motion data
+motion_data <- bids$load_motion()
+
+# Load motion data for a specific subject
+motion_data <- bids$load_motion(subject == "sub-1")
+
+```
+
+```{r}
+# Load motion data for a specific task and session
+# Remember you can also use != to filter the data you want
+motion_data <- bids$load_motion(
+  task == "Puzzle",
+  session == "tracker",
+  empty_check = TRUE,
+  merge_attr = c("subject", "session", "task"),
+  type_check = "auto"
+)
+
+motion_data
+```
+
+There are multiple ways to load motion data:
+
+1. Direct loading with filters:
+```{r eval=FALSE}
+# Load motion data with specific filters
+motion_data <- bids$load_motion(subject == "sub-1", task == "Puzzle")
+```
+
+2. List files first, then load:
+```{r eval=FALSE}
+# Get list of motion files
+motion_files <- bids$list_motion(subject == "sub-1")
+# Load the files
+motion_data <- bids$load_files(motion_files)
+```
+
+3. Filter the index directly:
+```{r eval=FALSE}
+# Filter the index
+filtered_files <- bids$index %>%
+  dplyr::filter(
+    subject == "sub-1",
+    datatype == "motion",
+    suffix == "tsv"
+  ) %>%
+  dplyr::pull(file_path)
+# Load the files
+motion_data <- bids$load_files(filtered_files)
+```
+
+### Loading Event Logs
+
+```{r}
+# Load all event logs
+events <- bids$load_logs()
+
+# Load event logs for a specific subject and task
+subject_events <- bids$load_logs(
+  subject == "sub-1",
+  task == "Puzzle",
+  merge_attr = c("subject", "session", "task"),
+  type_check = "strict"
+)
+```
+
+### Loading Session Data
+
+```{r eval=FALSE}
+# Load all session data
+sessions <- bids$load_session()
+
+# Load session data for a specific subject
+subject_sessions <- bids$load_session(subject == "sub-1")
+```
+
+### Loading Files by Path
+
+```{r eval=FALSE}
+# Load specific files by path
+file_paths <- c(
+  "path/to/file1.tsv",
+  "path/to/file2.tsv"
+)
+data <- bids$load_files(
+  file_paths,
+  empty_check = TRUE,
+  merge_attr = c("subject", "task"),
+  type_check = "auto"
+)
+```
+
+## Listing Data Files
+
+```{r eval=FALSE}
+# List all motion files
+motion_files <- bids$list_motion()
+
+# List motion files for a specific subject
+subject_motion_files <- bids$list_motion(subject == "sub-1")
+
+# List event log files
+event_files <- bids$list_logs()
+
+# List session files
+session_files <- bids$list_session()
+```
+
+# Data Merging and Type Conflict Handling
+
+## Internal Merging Mechanism
+
+When loading multiple files, `rbids` uses the `.merge_with_index` private method to:
+
+1. Read each file
+2. Add index attributes (subject, session, etc.) to each file's data
+3. Merge all data into a single tibble
+
+## Type Conflict Detection and Reporting
+
+During the merging process, `rbids` checks for type conflicts between columns with the same name across different files. For example, if "time" is numeric in one file but character in another, this creates a type conflict.
+
+The package provides detailed reporting of these conflicts:
+
+```
+TYPE CONFLICTS DETECTED (STRICT MODE)
+--------------------------------------------------------------------
+
+CONFLICT #1: Column 'time'
+------------------------------------------------------------
+  Type: 'numeric'
+  Files (2): sub-01_motion.tsv, sub-02_motion.tsv
+
+  Type: 'character'
+  Files (1): sub-03_motion.tsv
+```
+
+## Automatic vs. Strict Mode
+
+The `type_check` parameter controls how type conflicts are handled:
+
+- `"strict"` (default): Aborts the operation if type conflicts are detected
+- `"auto"`: Automatically resolves conflicts by converting to the most appropriate type
+
+In `"auto"` mode, the package attempts to convert all values to numeric if possible; otherwise, it converts to character.
+
+```{r eval=FALSE}
+# Using strict mode (default)
+motion_data <- bids$load_motion(type_check = "strict")
+
+# Using auto mode for automatic conflict resolution
+motion_data <- bids$load_motion(type_check = "auto")
+```
+
+# Advanced Features and Customization
+
+## Customized Data Loading
+
+You can customize data loading by:
+
+1. Filtering data using any combination of BIDS attributes:
+
+```{r eval=FALSE}
+# Load data with multiple filters
+data <- bids$load_motion(
+  subject == "sub-1",
+  session == "tracker",
+  task == "Puzzle",
+  tracksys == "RightHandMovement",
+  empty_check = TRUE,
+  type_check = "auto"
+)
+```
+
+2. Specifying which attributes to merge into the loaded data:
+
+```{r eval=FALSE}
+# Merge specific attributes
+data <- bids$load_motion(
+  subject == "sub-1",
+  merge_attr = c("subject", "session", "task", "run")
+)
+```
+
+## Error Handling and Debugging
+
+The package provides informative messages and warnings:
+
+- Empty file warnings
+- Missing metadata file warnings
+- Type conflict reports
+- Progress bars for long operations
+
+
+# Common Issues and Troubleshooting
+
+## Frequently Asked Questions
+
+### Q: Why am I getting type conflict errors?
+A: Different files may have the same column with different data types. Blank data files may also cause conflicts.
+Use `type_check = "auto"` to automatically resolve these conflicts, or ensure consistent data types across your files.
+
+### Q: How do I handle empty files?
+A: By default, `empty_check = TRUE` will automatically filter out empty files. If you want to include empty files, set `empty_check = FALSE`.
+
+### Q: Can I modify the BIDS dataset through rbids?
+A: Currently, `rbids` is primarily designed for reading and analyzing BIDS data, not modifying it. Set `readonly = FALSE` when initializing to enable future write capabilities.
+
+
+# References and Appendix
+
+## References
+
+- [BIDS Specification](https://bids-specification.readthedocs.io/en/stable/)
+- [BIDS Motion Specification](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/motion.html)
+- [R6 Package Documentation](https://r6.r-lib.org/)
+
+## Appendix: Internal Functions
+
+The package includes several internal helper functions:
+
+- `.single_character_check()`: Validates single character string inputs
+- `.bool_check()`: Validates boolean inputs
+- `.check_root_dir()`: Validates and potentially creates the root directory
+- `.check_empty_motion_files()`: Identifies empty motion files
+- `.check_missing_meta_files()`: Identifies missing metadata files
+- `.check_merge_attributes()`: Validates merge attribute specifications
+- `.detect_type_conflicts()`: Identifies type conflicts across files
+- `.resolve_type_conflicts()`: Automatically resolves type conflicts
+- `.report_type_conflicts()`: Reports type conflicts to the user
+- `.convert_column_types()`: Converts column types according to resolutions
+
+These internal functions are not typically called directly by users but support the core functionality of the package.

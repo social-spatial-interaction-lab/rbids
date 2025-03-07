@@ -88,8 +88,8 @@ Load the motion files. E.g. *motion.tsv.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
-datatype to filter.}
+\item{\code{...}}{Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+filter the data.}
 
 \item{\code{empty_check}}{Logical. If TRUE (default), automatically filters out empty.}
 
@@ -120,8 +120,8 @@ Load the logs files. E.g. *events.tsv.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
-datatype to filter.}
+\item{\code{...}}{Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+filter the data.}
 
 \item{\code{merge_attr}}{A character vector specifying which attributes to merge.
 Default: c("subject", "task").}
@@ -154,8 +154,8 @@ Load the session files. E.g. *sessions.tsv.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
-datatype to filter.}
+\item{\code{...}}{Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+filter the data.}
 
 \item{\code{merge_attr}}{A character vector specifying which attributes to merge.
 Default: c("subject", "session").}
@@ -215,8 +215,8 @@ List the motion files.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
-datatype to filter.}
+\item{\code{...}}{Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+filter the data.}
 }
 \if{html}{\out{</div>}}
 }
@@ -236,8 +236,8 @@ List the logs files.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
-datatype to filter.}
+\item{\code{...}}{Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+filter the data.}
 }
 \if{html}{\out{</div>}}
 }
@@ -257,8 +257,8 @@ List the session files.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{A list of filter conditions. Use session, task, tracksys, acq, run,
-datatype to filter.}
+\item{\code{...}}{Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+filter the data.}
 }
 \if{html}{\out{</div>}}
 }

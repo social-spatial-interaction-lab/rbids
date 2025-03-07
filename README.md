@@ -6,7 +6,7 @@
 motion data. It provides a simple interface to work with BIDS-formatted datasets, making
 it easier to load, filter, and analyze motion data.
 
-## Basic Usage
+## Quick Start
 
 ```r
 library(rbids)
@@ -21,7 +21,7 @@ motion_data <- bids$load_motion()
 filtered_motion <- bids$load_motion(task = "rest", subject = "sub-01")
 
 # Load event logs
-event_logs <- bids$load_logs(task = "rest")
+event_logs <- bids$load_logs()
 
 # Load session data
 session_data <- bids$load_session()
@@ -29,39 +29,34 @@ session_data <- bids$load_session()
 
 ## Key Features
 
-- **Easy BIDS Navigation**: Automatically indexes and provides access to BIDS-compliant datasets
-- **Flexible Data Loading**: Load motion files, event logs, and session information with powerful filtering options
-- **Intelligent Type Handling**: Automatic detection and resolution of data type conflicts across files
-- **Dataset Summary**: Quick overview of dataset contents including subjects, sessions, tasks, and datatypes
+- **Data Exploration**: Quickly index and summarize BIDS datasets to understand their structure and contents
+- **Data Loading**: Efficiently load motion data, event logs, and participant information
+- **Data Preprocessing**: Filter, merge, and prepare data for analysis
+- **Type Conflict Resolution**: Automatically handle type conflicts when merging data from multiple files
 
-## Detailed Documentation
 
-### Creating a BIDS Object
-
-```r
-# Create a BIDS object with read-only access (default)
-bids <- Bids$new("/path/to/bids/dataset")
-
+## Installation
+```r 
+# install.packages("devtools")
+devtools::install_github("social-spatial-interaction-lab/rbids")
 ```
 
+## Basic Usage
 ### Loading Data
 
 ```r
-# Load all motion data
-motion_data <- bids$load_motion()
-
-# Filter by subject, task, session, etc.
+# Use complex filter by subject, task, session, etc.
 filtered_data <- bids$load_motion(
-  subject = "sub-01",
-  task = "rest",
-  session = "01"
+  subject == "sub-1",
+  task == "task-2",
+  session != "ses-3"
 )
 
 # Load participant information
 participants <- bids$load_participant()
 
 # Load event logs
-events <- bids$load_logs(task = "rest")
+events <- bids$load_logs()
 
 # Load session data
 sessions <- bids$load_session()
@@ -86,7 +81,7 @@ session_files <- bids$list_session()
 ### Loading Custom Files
 
 ```r
-# Load specific files by path
+# Load files by path
 files <- bids$load_files(c("/path/to/file1.tsv", "/path/to/file2.tsv"))
 ```
 

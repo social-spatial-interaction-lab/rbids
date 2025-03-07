@@ -1,6 +1,6 @@
 Package: rbids
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Managing and accessing Brain Imaging Data Structure (BIDS)
 Version: 0.2.0
 Author: Who wrote it
 Maintainer: The package maintainer <yourself@somewhere.net>
@@ -11,6 +11,8 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports:
@@ -25,3 +27,4 @@ Imports:
     purrr,
     R6,
     fs
+VignetteBuilder: knitr

@@ -8,6 +8,8 @@
 #' @field root A character string. The root directory of the BIDS dataset.
 #' @field index A tibble containing the BIDS dataset index.
 #' @field readonly Logical. Default is TRUE.
+#' @importFrom R6 R6Class
+#' @importFrom magrittr %>%
 #' @export
 Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
   "Bids",
@@ -38,8 +40,8 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
     },
     #' @description
     #' Load the motion files. E.g. *motion.tsv.
-    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
-    #' datatype to filter.
+    #' @param ... Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+    #' filter the data.
     #' @param empty_check Logical. If TRUE (default), automatically filters out empty.
     #' @param merge_attr A character vector specifying which attributes to merge.
     #' Default: c("subject").
@@ -64,8 +66,8 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
     },
     #' @description
     #' Load the logs files. E.g. *events.tsv.
-    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
-    #' datatype to filter.
+    #' @param ... Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+    #' filter the data.
     #' @param merge_attr A character vector specifying which attributes to merge.
     #' Default: c("subject", "task").
     #' @param type_check Character. Determines how to handle type conflicts across
@@ -86,8 +88,8 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
     },
     #' @description
     #' Load the session files. E.g. *sessions.tsv.
-    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
-    #' datatype to filter.
+    #' @param ... Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+    #' filter the data.
     #' @param merge_attr A character vector specifying which attributes to merge.
     #' Default: c("subject", "session").
     #' @param type_check Character. Determines how to handle type conflicts across
@@ -142,8 +144,8 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
     },
     #' @description
     #' List the motion files.
-    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
-    #' datatype to filter.
+    #' @param ... Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+    #' filter the data.
     #' @return A character vector containing the motion files.
     list_motion = function(...) {
       result <- self$index %>%
@@ -153,8 +155,8 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
     },
     #' @description
     #' List the logs files.
-    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
-    #' datatype to filter.
+    #' @param ... Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+    #' filter the data.
     #' @return A character vector containing the logs files.
     list_logs = function(...) {
       result <- self$index %>%
@@ -164,8 +166,8 @@ Bids <- R6Class( # nolint: object_name_linter, cyclocomp_linter.
     },
     #' @description
     #' List the session files.
-    #' @param ... A list of filter conditions. Use session, task, tracksys, acq, run,
-    #' datatype to filter.
+    #' @param ... Use `subject`, `session`, `task`, `tracksys`, `acq`, and `run` to
+    #' filter the data.
     #' @return A character vector containing the session files.
     list_session = function(...) {
       result <- self$index %>%

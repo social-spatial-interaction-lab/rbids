@@ -1,7 +1,6 @@
 #' BIDS Dataset Handler
 #'
 #' A class for managing and accessing BIDS(Brain Imaging Data Structure) motions data.
-#' See [BIDS Motion](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/motion.html) for more details.
 #' @param root A character string. The root directory of the BIDS dataset.
 #' @param readonly Logical. Default is TRUE.
 #'
